@@ -9,11 +9,11 @@ import kotlin.math.sqrt
 
 const val CITIES_SIZE = 29
 const val ARTIFICIAL_PHEROMONE = 1.0
-const val ANTS_SIZE = 116
-const val ALPHA = 1.0
+const val ANTS_SIZE = 6 * CITIES_SIZE
+const val ALPHA = 0.5
 const val BETA = 1.0
-const val EVAPORATION_FACTOR = 0.4  // (0, 1], 1 means random
-const val ITERATIONS = 150
+const val EVAPORATION_FACTOR = 0.2  // (0, 1], 1 means random
+const val ITERATIONS = 250
 
 internal class City(private val cityID: Int,
                     private val xCoord: Double,
