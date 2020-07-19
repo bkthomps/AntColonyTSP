@@ -145,7 +145,7 @@ fun main() {
     print("${computeAverageCost(0.2, 0.5, 200, true)}")
 }
 
-fun computeAverageCost(evaporationFactor: Double, transitionControl: Double,
+internal fun computeAverageCost(evaporationFactor: Double, transitionControl: Double,
                        populationSize: Int, isPheromoneOnline: Boolean): Int {
     val computations = 5
     var averageCost = 0.0
@@ -156,7 +156,7 @@ fun computeAverageCost(evaporationFactor: Double, transitionControl: Double,
     return (averageCost / computations).roundToInt()
 }
 
-fun computeCost(evaporationFactor: Double, transitionControl: Double,
+internal fun computeCost(evaporationFactor: Double, transitionControl: Double,
                 populationSize: Int, isPheromoneOnline: Boolean): Double {
     val cities = load()
     val ants = Array(populationSize) { i -> Ant(i % CITIES_SIZE, cities) }
