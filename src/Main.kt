@@ -2,19 +2,13 @@ import java.io.File
 import java.lang.Math.random
 import kotlin.IllegalStateException
 import kotlin.collections.ArrayList
-import kotlin.math.min
-import kotlin.math.max
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 const val CITIES_SIZE = 29
 const val ARTIFICIAL_PHEROMONE = 1.0
-const val ANTS_SIZE = 6 * CITIES_SIZE
 const val ALPHA = 0.5
 const val BETA = 1.0
-const val EVAPORATION_FACTOR = 0.2  // (0, 1], 1 means random
 const val ITERATIONS = 250
-const val ONLINE_PHEROMONE = true  // true = online, false = offline
 
 internal class City(private val cityID: Int,
                     private val xCoord: Double,
@@ -48,10 +42,10 @@ internal class City(private val cityID: Int,
             }
         }
 
-        fun evaporate() {
+        fun evaporate(evaporationFactor: Double) {
             for (y in 0 until CITIES_SIZE) {
                 for (x in 0 until CITIES_SIZE) {
-                    pheromone[y][x] *= (1 - EVAPORATION_FACTOR)
+                    pheromone[y][x] *= (1 - evaporationFactor)
                 }
             }
         }
@@ -63,7 +57,34 @@ internal class Ant(private val initialCityID: Int, private val cities: ArrayList
     private var allowableTravel = Array(CITIES_SIZE) { i -> i != initialCityID }
     private var cityHistory = arrayListOf(cities[initialCityID])
 
-    fun move() {
+    fun move(transitionControl: Double) {
+        if (random() < transitionControl) bestMove() else rouletteMove()
+    }
+
+    private fun bestMove() {
+        var bestImportance = -1.0
+        var index = -1
+        for (i in 0 until CITIES_SIZE) {
+            if (!allowableTravel[i]) {
+                continue
+            }
+            val pheromone = cities[currentCity].pheromoneBetween(cities[i])
+            val distance = cities[currentCity].distanceFrom(cities[i])
+            val relativeImportance = pheromone / distance.pow(BETA)
+            if (relativeImportance > bestImportance) {
+                bestImportance = relativeImportance
+                index = i
+            }
+        }
+        if (index < 0) {
+            throw IllegalStateException("Index less than zero")
+        }
+        currentCity = index
+        allowableTravel[index] = false
+        cityHistory.add(cities[index])
+    }
+
+    private fun rouletteMove() {
         val importance = Array(CITIES_SIZE) { 0.0 }
         var totalImportance = 0.0
         for (i in 0 until CITIES_SIZE) {
@@ -138,16 +159,17 @@ internal fun load(): ArrayList<City> {
     return cities
 }
 
-fun main() {
+fun computeCost(evaporationFactor: Double, transitionControl: Double,
+                populationSize: Int, isPheromoneOnline: Boolean): Double {
     val cities = load()
-    val ants = Array(ANTS_SIZE) { i -> Ant(i % CITIES_SIZE, cities) }
+    val ants = Array(populationSize) { i -> Ant(i % CITIES_SIZE, cities) }
     var bestGlobalCost = Double.MAX_VALUE
     for (i in 0 until ITERATIONS) {
         var bestCurrentCost = Double.MAX_VALUE
         lateinit var bestCurrentPath: ArrayList<City>
         for (ant in ants) {
             for (j in 0 until CITIES_SIZE - 1) {
-                ant.move()
+                ant.move(transitionControl)
             }
             val currentCost = ant.getCost()
             val currentPath = ant.getCityHistory()
@@ -156,20 +178,35 @@ fun main() {
                 bestCurrentPath = currentPath
             }
             ant.reset()
-            if (ONLINE_PHEROMONE) {
-                City.evaporate()
+            if (isPheromoneOnline) {
+                City.evaporate(evaporationFactor)
                 for (j in 0 until CITIES_SIZE) {
                     currentPath[j].addPheromone(currentPath[j + 1])
                 }
             }
         }
-        if (!ONLINE_PHEROMONE) {
-            City.evaporate()
+        if (!isPheromoneOnline) {
+            City.evaporate(evaporationFactor)
             for (j in 0 until CITIES_SIZE) {
                 bestCurrentPath[j].addPheromone(bestCurrentPath[j + 1])
             }
         }
         bestGlobalCost = min(bestGlobalCost, bestCurrentCost)
     }
-    print("Best cost is $bestGlobalCost")
+    return bestGlobalCost
+}
+
+fun computeAverageCost(evaporationFactor: Double, transitionControl: Double,
+                       populationSize: Int, isPheromoneOnline: Boolean): Int {
+    val computations = 5
+    var averageCost = 0.0
+    for (i in 0 until computations) {
+        averageCost +=
+                computeCost(evaporationFactor, transitionControl, populationSize, isPheromoneOnline)
+    }
+    return (averageCost / computations).roundToInt()
+}
+
+fun main() {
+    print("${computeAverageCost(0.2, 0.5, 200, true)}")
 }
