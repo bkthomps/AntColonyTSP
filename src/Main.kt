@@ -141,22 +141,19 @@ internal class Ant(private val initialCityID: Int, private val cities: ArrayList
     }
 }
 
-internal fun load(): ArrayList<City> {
-    val cities = ArrayList<City>()
-    File("cities.txt").forEachLine {
-        if (it.isNotBlank()) {
-            val values = it.split(",")
-            if (values.size != 3) {
-                throw IllegalStateException("City must have three attributes")
-            }
-            val city = City(values[0].toInt() - 1, values[1].toDouble(), values[2].toDouble())
-            cities.add(city)
-        }
+fun main() {
+    print("${computeAverageCost(0.2, 0.5, 200, true)}")
+}
+
+fun computeAverageCost(evaporationFactor: Double, transitionControl: Double,
+                       populationSize: Int, isPheromoneOnline: Boolean): Int {
+    val computations = 5
+    var averageCost = 0.0
+    for (i in 0 until computations) {
+        averageCost +=
+                computeCost(evaporationFactor, transitionControl, populationSize, isPheromoneOnline)
     }
-    if (cities.size != CITIES_SIZE) {
-        throw IllegalStateException("Incorrect number of cities")
-    }
-    return cities
+    return (averageCost / computations).roundToInt()
 }
 
 fun computeCost(evaporationFactor: Double, transitionControl: Double,
@@ -196,17 +193,20 @@ fun computeCost(evaporationFactor: Double, transitionControl: Double,
     return bestGlobalCost
 }
 
-fun computeAverageCost(evaporationFactor: Double, transitionControl: Double,
-                       populationSize: Int, isPheromoneOnline: Boolean): Int {
-    val computations = 5
-    var averageCost = 0.0
-    for (i in 0 until computations) {
-        averageCost +=
-                computeCost(evaporationFactor, transitionControl, populationSize, isPheromoneOnline)
+internal fun load(): ArrayList<City> {
+    val cities = ArrayList<City>()
+    File("cities.txt").forEachLine {
+        if (it.isNotBlank()) {
+            val values = it.split(",")
+            if (values.size != 3) {
+                throw IllegalStateException("City must have three attributes")
+            }
+            val city = City(values[0].toInt() - 1, values[1].toDouble(), values[2].toDouble())
+            cities.add(city)
+        }
     }
-    return (averageCost / computations).roundToInt()
-}
-
-fun main() {
-    print("${computeAverageCost(0.2, 0.5, 200, true)}")
+    if (cities.size != CITIES_SIZE) {
+        throw IllegalStateException("Incorrect number of cities")
+    }
+    return cities
 }
