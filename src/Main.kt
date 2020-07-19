@@ -14,6 +14,7 @@ const val ALPHA = 0.5
 const val BETA = 1.0
 const val EVAPORATION_FACTOR = 0.2  // (0, 1], 1 means random
 const val ITERATIONS = 250
+const val ONLINE_PHEROMONE = true  // true = online, false = offline
 
 internal class City(private val cityID: Int,
                     private val xCoord: Double,
@@ -149,15 +150,24 @@ fun main() {
                 ant.move()
             }
             val currentCost = ant.getCost()
+            val currentPath = ant.getCityHistory()
             if (currentCost < bestCurrentCost) {
                 bestCurrentCost = currentCost
-                bestCurrentPath = ant.getCityHistory()
+                bestCurrentPath = currentPath
             }
             ant.reset()
+            if (ONLINE_PHEROMONE) {
+                City.evaporate()
+                for (j in 0 until CITIES_SIZE) {
+                    currentPath[j].addPheromone(currentPath[j + 1])
+                }
+            }
         }
-        City.evaporate()
-        for (j in 0 until CITIES_SIZE) {
-            bestCurrentPath[j].addPheromone(bestCurrentPath[j + 1])
+        if (!ONLINE_PHEROMONE) {
+            City.evaporate()
+            for (j in 0 until CITIES_SIZE) {
+                bestCurrentPath[j].addPheromone(bestCurrentPath[j + 1])
+            }
         }
         bestGlobalCost = min(bestGlobalCost, bestCurrentCost)
     }
