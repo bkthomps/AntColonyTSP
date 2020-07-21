@@ -11,25 +11,25 @@ const val ITERATIONS = 250
 
 fun main() {
     print("(median, arithmetic mean)\n\n")
-    alternate(true)
-    alternate(false)
+    computeLogicGroup(true)
+    computeLogicGroup(false)
 }
 
-internal fun alternate(isPheromoneOnline: Boolean) {
+internal fun computeLogicGroup(isPheromoneOnline: Boolean) {
     val listDouble = ArrayList<Any>()
     for (i in 5 until 100 step 5) {
         listDouble.add(i / 100.0)
     }
-    initFile("evaporation", isPheromoneOnline, listDouble)
-    initFile("transition", isPheromoneOnline, listDouble)
+    computeSection("evaporation", isPheromoneOnline, listDouble)
+    computeSection("transition", isPheromoneOnline, listDouble)
     val listInt = ArrayList<Any>()
     for (i in 25..500 step 25) {
         listInt.add(i)
     }
-    initFile("population", isPheromoneOnline, listInt)
+    computeSection("population", isPheromoneOnline, listInt)
 }
 
-internal fun initFile(type: String, isPheromoneOnline: Boolean, list: ArrayList<Any>) {
+internal fun computeSection(type: String, isPheromoneOnline: Boolean, list: ArrayList<Any>) {
     val onlineCode = if (isPheromoneOnline) "online" else "offline"
     val fileName = "${type}_${onlineCode}.csv"
     File(fileName).delete()
