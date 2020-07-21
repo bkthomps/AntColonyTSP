@@ -53,7 +53,7 @@ internal fun computeSection(type: String, isPheromoneOnline: Boolean, list: Arra
 internal fun computeAverageCost(evaporationFactor: Double, transitionControl: Double,
                                 populationSize: Int, isPheromoneOnline: Boolean): Pair<Int, Int> {
     var arithmeticMean = 0.0
-    val computations = 15
+    val computations = 25
     val allCosts = ArrayList<Int>()
     for (i in 0 until computations) {
         val circuit = Circuit()
