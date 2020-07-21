@@ -4,8 +4,8 @@ import kotlin.math.pow
 
 internal class Ant(private val initialCityID: Int, private val cities: ArrayList<City>) {
     private var currentCity = initialCityID
-    private var allowableTravel = Array(CITIES_SIZE) { i -> i != initialCityID }
-    private var cityHistory = arrayListOf(cities[initialCityID])
+    private val allowableTravel = Array(CITIES_SIZE) { i -> i != initialCityID }
+    private val cityHistory = arrayListOf(cities[initialCityID])
 
     fun move(transitionControl: Double, pheromone: Array<Array<Double>>) {
         if (Math.random() < transitionControl) bestMove(pheromone) else rouletteMove(pheromone)

@@ -28,14 +28,4 @@ internal class City(private val cityID: Int,
         val max = if (cityID < other.cityID) other else this
         pheromone[min.cityID][max.cityID] += 1 / min.distanceFrom(max)
     }
-
-    companion object {
-        fun evaporate(evaporationFactor: Double, pheromone: Array<Array<Double>>) {
-            for (y in 0 until CITIES_SIZE) {
-                for (x in 0 until CITIES_SIZE) {
-                    pheromone[y][x] *= (1 - evaporationFactor)
-                }
-            }
-        }
-    }
 }
