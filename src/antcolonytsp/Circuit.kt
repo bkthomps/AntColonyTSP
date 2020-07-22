@@ -13,11 +13,12 @@ internal class Circuit {
 
     fun compute(evaporationFactor: Double, transitionControl: Double,
                 populationSize: Int, isPheromoneOnline: Boolean): Double {
-        val ants = Array(populationSize) { i -> Ant(i % CITIES_SIZE, cities) }
+        var ants = Array(populationSize) { i -> Ant(i % CITIES_SIZE, cities) }.toList()
         var bestGlobalCost = Double.MAX_VALUE
         for (i in 0 until ITERATIONS) {
             var bestCurrentCost = Double.MAX_VALUE
             lateinit var bestCurrentPath: ArrayList<City>
+            ants = ants.shuffled()
             for (ant in ants) {
                 for (j in 0 until CITIES_SIZE - 1) {
                     ant.move(transitionControl, pheromone)
