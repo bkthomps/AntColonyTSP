@@ -1,14 +1,13 @@
 # AntColonyTSP
-Solution to TSP using ant colony.
+An approximation to the travelling salesperson problem using an ant colony system.
 
 This project uses Kotlin 1.3.72 and Java 14 for the runtime environment.
 
-### Run Application
+## Setup
+Run `make compile` to create the jar file. Then run `make` to run it.
 
-The jar file is already included and can be run with `make run` and will take some time to run. While running, it will print to the terminal, and will create csv files.
+If you do not have Java 14 or newer, download the latest Java release using `brew install java` on MacOS or
+`apt install default-jre` on Ubuntu.
 
-### Compile Application
-
-You will first need `kotlinc` which can be downloaded on MacOS using `brew install kotlin` or on Ubuntu 16.04 or later using `sudo snap install --classic kotlin`
-
-Then you can compile it with `make compile` and run it with `make run`
+If you do not have Kotlin 1.3.72 or newer, download the latest Kotlin release using `brew install kotlin` on MacOS or
+`snap install --classic kotlin` on Ubuntu.

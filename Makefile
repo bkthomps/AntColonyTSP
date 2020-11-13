@@ -7,7 +7,5 @@ compile:
 	kotlinc src/antcolonytsp/*.kt -include-runtime -d antcolonytsp.jar
 
 clean:
-	rm *.jar
-
-clear:
-	rm *.csv
+	rm -f *.jar
+	rm -f *.csv
