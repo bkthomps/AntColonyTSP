@@ -4,7 +4,7 @@ import kotlin.math.pow
 
 internal class Ant(private val initialCityID: Int, private val cities: ArrayList<City>) {
     private var currentCity = initialCityID
-    private val allowableTravel = Array(CITIES_SIZE) { i -> i != initialCityID }
+    private val allowableTravel = Array(cities.size) { i -> i != initialCityID }
     private val cityHistory = arrayListOf(cities[initialCityID])
 
     fun move(transitionControl: Double, pheromone: Array<Array<Double>>) {
@@ -14,7 +14,7 @@ internal class Ant(private val initialCityID: Int, private val cities: ArrayList
     private fun bestMove(pheromone: Array<Array<Double>>) {
         var bestImportance = -1.0
         var index = -1
-        for (i in 0 until CITIES_SIZE) {
+        for (i in 0 until cities.size) {
             if (!allowableTravel[i]) {
                 continue
             }
@@ -35,9 +35,9 @@ internal class Ant(private val initialCityID: Int, private val cities: ArrayList
     }
 
     private fun rouletteMove(pheromone: Array<Array<Double>>) {
-        val importance = Array(CITIES_SIZE) { 0.0 }
+        val importance = Array(cities.size) { 0.0 }
         var totalImportance = 0.0
-        for (i in 0 until CITIES_SIZE) {
+        for (i in 0 until cities.size) {
             if (!allowableTravel[i]) {
                 continue
             }
@@ -58,24 +58,24 @@ internal class Ant(private val initialCityID: Int, private val cities: ArrayList
                 cityHistory.add(cities[i])
                 return
             }
-            i = (i + 1) % CITIES_SIZE
+            i = (i + 1) % cities.size
         }
     }
 
     fun getCost(): Double {
-        if (cityHistory.size != CITIES_SIZE) {
+        if (cityHistory.size != cities.size) {
             throw IllegalStateException("Did not travel to all nodes")
         }
         var cost = 0.0
         cityHistory.add(cities[initialCityID])
-        for (i in 0 until CITIES_SIZE) {
+        for (i in 0 until cities.size) {
             cost += cityHistory[i].distanceFrom(cityHistory[i + 1])
         }
         return cost
     }
 
     fun getCityHistory(): ArrayList<City> {
-        if (cityHistory.size != CITIES_SIZE + 1) {
+        if (cityHistory.size != cities.size + 1) {
             throw IllegalStateException("Did not travel to all nodes")
         }
         return ArrayList(cityHistory)
@@ -83,7 +83,7 @@ internal class Ant(private val initialCityID: Int, private val cities: ArrayList
 
     fun reset() {
         currentCity = initialCityID
-        for (i in 0 until CITIES_SIZE) {
+        for (i in 0 until cities.size) {
             allowableTravel[i] = (i != initialCityID)
         }
         cityHistory.clear()

@@ -3,7 +3,6 @@ package antcolonytsp
 import java.io.File
 import kotlin.math.roundToInt
 
-const val CITIES_SIZE = 29
 const val ARTIFICIAL_PHEROMONE = 1.0
 const val ALPHA = 0.5
 const val BETA = 1.0
