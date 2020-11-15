@@ -75,6 +75,7 @@ internal class Circuit(private val fileName: String, private val startingPheromo
                 }
             }
             bestGlobalCost = min(bestGlobalCost, bestCurrentCost)
+            println("At iteration " + i + " the best cost is " + bestGlobalCost)
         }
         return bestGlobalCost
     }
@@ -93,12 +94,17 @@ internal class Circuit(private val fileName: String, private val startingPheromo
         if (!file.exists()) {
             throw IllegalArgumentException("File does not exist")
         }
+        var lastCity = 0
         file.forEachLine {
             if (it.isNotBlank()) {
-                val values = it.split(",")
+                val values = it.split(" ")
                 if (values.size != 3) {
                     throw IllegalStateException("City must have three attributes")
                 }
+                if (lastCity != values[0].toInt() - 1) {
+                    throw IllegalStateException("Invalid city: " + values[0].toInt())
+                }
+                lastCity++
                 val city = City(values[0].toInt() - 1, values[1].toDouble(), values[2].toDouble())
                 cities.add(city)
             }

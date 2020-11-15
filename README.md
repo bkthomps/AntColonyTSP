@@ -28,3 +28,6 @@ Or, if I wanted to rely on defaults, I could run:
 ```
 gradle run --args="-f cities.txt"
 ```
+
+The TSP data file should have a line for each city, with three space-separated values: the first being the city number,
+and the second and third being the x and y coordinates.
