@@ -1,19 +1,11 @@
 package antcolonytsp
 
 import kotlinx.cli.*
+import java.io.File
 
 enum class PheromoneMode { OFFLINE, ONLINE_DELAYED }
 
 fun main(args: Array<String>) {
-    val DEFAULT_EVAPORATION_FACTOR = 0.05
-    val DEFAULT_TRANSITION_CONTROL = 0.35
-    val DEFAULT_POPULATION_SIZE = 250
-    val DEFAULT_PHEROMONE_MODE = PheromoneMode.OFFLINE
-    val DEFAULT_ITERATIONS = 250
-    val DEFAULT_ALPHA = 0.5
-    val DEFAULT_BETA = 1.0
-    val DEFAULT_STARTING_PHEROMONE = 1.0
-
     val parser = ArgParser("gradle run --args=\"<arguments>\", using the following")
 
     val fileName by parser.option(
@@ -28,68 +20,75 @@ fun main(args: Array<String>) {
         shortName = "e",
         fullName = "evaporation",
         description = "Evaporation Factor"
-    ).default(DEFAULT_EVAPORATION_FACTOR)
+    ).default(0.05)
 
     val transitionControl by parser.option(
         ArgType.Double,
         shortName = "t",
         fullName = "transition",
         description = "Transition Control"
-    ).default(DEFAULT_TRANSITION_CONTROL)
+    ).default(0.35)
 
     val populationSize by parser.option(
         ArgType.Int,
         shortName = "p",
         fullName = "population",
         description = "Population Size"
-    ).default(DEFAULT_POPULATION_SIZE)
+    ).default(250)
 
     val pheromoneMode by parser.option(
         ArgType.Choice<PheromoneMode>(),
         shortName = "m",
         fullName = "mode",
         description = "Pheromone Mode"
-    ).default(DEFAULT_PHEROMONE_MODE)
+    ).default(PheromoneMode.OFFLINE)
 
     val iterations by parser.option(
         ArgType.Int,
         shortName = "i",
         fullName = "iterations",
         description = "Iterations"
-    ).default(DEFAULT_ITERATIONS)
+    ).default(250)
 
     val alpha by parser.option(
         ArgType.Double,
         shortName = "a",
         fullName = "alpha",
         description = "Alpha"
-    ).default(DEFAULT_ALPHA)
+    ).default(0.5)
 
     val beta by parser.option(
         ArgType.Double,
         shortName = "b",
         fullName = "beta",
         description = "Beta"
-    ).default(DEFAULT_BETA)
+    ).default(1.0)
 
     val startingPheromone by parser.option(
         ArgType.Double,
         shortName = "s",
         fullName = "starting",
         description = "Starting Pheromone"
-    ).default(DEFAULT_STARTING_PHEROMONE)
+    ).default(1.0)
 
     parser.parse(args)
 
-    val circuit = Circuit(fileName, startingPheromone)
-    val currentCost = circuit.compute(
+    val circuit = Circuit(
+        fileName = fileName,
         evaporationFactor = evaporationFactor,
         transitionControl = transitionControl,
         populationSize = populationSize,
         pheromoneMode = pheromoneMode,
         iterations = iterations,
         alpha = alpha,
-        beta = beta
+        beta = beta,
+        startingPheromone = startingPheromone
     )
-    println(currentCost)
+    val (bestCost, bestPath) = circuit.compute()
+    val file = File("result_" + fileName)
+    file.delete()
+    file.appendText("Cost: $bestCost\nPath:\n")
+    for (city in bestPath) {
+        file.appendText("$city\n")
+    }
 }

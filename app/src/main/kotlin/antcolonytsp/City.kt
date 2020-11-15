@@ -26,4 +26,8 @@ internal class City(private val cityID: Int, private val xCoord: Double, private
         val max = if (cityID < other.cityID) other else this
         pheromone[min.cityID][max.cityID] += 1 / min.distanceFrom(max)
     }
+
+    fun cityID(): Int {
+        return cityID
+    }
 }

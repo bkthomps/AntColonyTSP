@@ -5,3 +5,4 @@ gradle/*
 app/build/*
 lib/*
 out/*
+app/result_*.tsp

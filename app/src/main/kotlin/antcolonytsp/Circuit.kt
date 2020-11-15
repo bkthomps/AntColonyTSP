@@ -1,9 +1,18 @@
 package antcolonytsp
 
 import java.io.File
-import kotlin.math.min
 
-internal class Circuit(private val fileName: String, private val startingPheromone: Double) {
+internal class Circuit(
+    private val fileName: String,
+    private val evaporationFactor: Double,
+    private val transitionControl: Double,
+    private val populationSize: Int,
+    private val pheromoneMode: PheromoneMode,
+    private val iterations: Int,
+    private val alpha: Double,
+    private val beta: Double,
+    private val startingPheromone: Double
+) {
     private val cities = load()
     private val pheromone = Array(cities.size) { i ->
         Array(cities.size) { j ->
@@ -12,20 +21,6 @@ internal class Circuit(private val fileName: String, private val startingPheromo
     }
 
     init {
-        if (startingPheromone < 0.0) {
-            throw IllegalArgumentException("Starting pheromone must be 0.0 or greater")
-        }
-    }
-
-    fun compute(
-        evaporationFactor: Double,
-        transitionControl: Double,
-        populationSize: Int,
-        pheromoneMode: PheromoneMode,
-        iterations: Int,
-        alpha: Double,
-        beta: Double
-    ): Double {
         if (evaporationFactor < 0.0 || evaporationFactor > 1.0) {
             throw IllegalArgumentException("Evaporation factor must be in [0.0, 1.0]")
         }
@@ -44,8 +39,15 @@ internal class Circuit(private val fileName: String, private val startingPheromo
         if (beta < 0.0) {
             throw IllegalArgumentException("Beta must be 0.0 or greater")
         }
+        if (startingPheromone < 0.0) {
+            throw IllegalArgumentException("Starting pheromone must be 0.0 or greater")
+        }
+    }
+
+    fun compute(): Pair<Double, Array<Int>> {
         var ants = Array(populationSize) { i -> Ant(i % cities.size, cities, alpha, beta) }.toList()
         var bestGlobalCost = Double.MAX_VALUE
+        lateinit var bestGlobalPath: ArrayList<City>
         for (i in 0 until iterations) {
             var bestCurrentCost = Double.MAX_VALUE
             lateinit var bestCurrentPath: ArrayList<City>
@@ -74,10 +76,16 @@ internal class Circuit(private val fileName: String, private val startingPheromo
                     bestCurrentPath[j].addPheromone(bestCurrentPath[j + 1], pheromone)
                 }
             }
-            bestGlobalCost = min(bestGlobalCost, bestCurrentCost)
-            println("At iteration " + i + " the best cost is " + bestGlobalCost)
+            if (bestCurrentCost < bestGlobalCost) {
+                bestGlobalCost = bestCurrentCost
+                bestGlobalPath = bestCurrentPath
+            }
+            println("At iteration $i the best cost is $bestGlobalCost")
         }
-        return bestGlobalCost
+        if (bestGlobalPath.size != cities.size + 1) {
+            throw IllegalStateException("Path should be cities size plus one")
+        }
+        return Pair(bestGlobalCost, Array(bestGlobalPath.size) { i -> bestGlobalPath[i].cityID() + 1 })
     }
 
     private fun evaporate(evaporationFactor: Double) {

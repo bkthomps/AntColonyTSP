@@ -3,8 +3,10 @@ package antcolonytsp
 import kotlin.math.pow
 
 internal class Ant(
-    private val initialCityID: Int, private val cities: ArrayList<City>,
-    private val alpha: Double, private val beta: Double
+    private val initialCityID: Int,
+    private val cities: ArrayList<City>,
+    private val alpha: Double,
+    private val beta: Double
 ) {
     private var currentCity = initialCityID
     private val allowableTravel = Array(cities.size) { i -> i != initialCityID }
