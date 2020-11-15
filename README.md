@@ -1,3 +1,6 @@
+[![GitHubBuild](https://github.com/bkthomps/AntColonyTSP/workflows/build/badge.svg)](https://github.com/bkthomps/AntColonyTSP)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/bkthomps/AntColonyTSP/blob/master/LICENSE)
+
 # AntColonyTSP
 An approximation to the travelling salesperson problem using an ant colony system.
 
