@@ -2,7 +2,10 @@ package antcolonytsp
 
 import kotlin.math.pow
 
-internal class Ant(private val initialCityID: Int, private val cities: ArrayList<City>) {
+internal class Ant(
+    private val initialCityID: Int, private val cities: ArrayList<City>,
+    private val alpha: Double, private val beta: Double
+) {
     private var currentCity = initialCityID
     private val allowableTravel = Array(cities.size) { i -> i != initialCityID }
     private val cityHistory = arrayListOf(cities[initialCityID])
@@ -20,7 +23,7 @@ internal class Ant(private val initialCityID: Int, private val cities: ArrayList
             }
             val localPheromone = cities[currentCity].pheromoneBetween(cities[i], pheromone)
             val distance = cities[currentCity].distanceFrom(cities[i])
-            val relativeImportance = localPheromone / distance.pow(BETA)
+            val relativeImportance = localPheromone / distance.pow(beta)
             if (relativeImportance > bestImportance) {
                 bestImportance = relativeImportance
                 index = i
@@ -43,7 +46,7 @@ internal class Ant(private val initialCityID: Int, private val cities: ArrayList
             }
             val localPheromone = cities[currentCity].pheromoneBetween(cities[i], pheromone)
             val distance = cities[currentCity].distanceFrom(cities[i])
-            val relativeImportance = localPheromone.pow(ALPHA) / distance.pow(BETA)
+            val relativeImportance = localPheromone.pow(alpha) / distance.pow(beta)
             importance[i] = relativeImportance
             totalImportance += relativeImportance
         }

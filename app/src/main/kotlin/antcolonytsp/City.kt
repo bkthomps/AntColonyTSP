@@ -4,9 +4,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 
-internal class City(private val cityID: Int,
-                    private val xCoord: Double,
-                    private val yCoord: Double) {
+internal class City(private val cityID: Int, private val xCoord: Double, private val yCoord: Double) {
     fun distanceFrom(city: City): Double {
         val xDiff = xCoord - city.xCoord
         val yDiff = yCoord - city.yCoord
