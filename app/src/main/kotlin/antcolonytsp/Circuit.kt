@@ -12,7 +12,7 @@ internal class Circuit {
     }
 
     fun compute(evaporationFactor: Double, transitionControl: Double,
-                populationSize: Int, isPheromoneOnline: Boolean): Double {
+                populationSize: Int, pheromoneMode: PheromoneMode): Double {
         var ants = Array(populationSize) { i -> Ant(i % cities.size, cities) }.toList()
         var bestGlobalCost = Double.MAX_VALUE
         for (i in 0 until ITERATIONS) {
@@ -30,14 +30,14 @@ internal class Circuit {
                     bestCurrentPath = currentPath
                 }
                 ant.reset()
-                if (isPheromoneOnline) {
+                if (pheromoneMode == PheromoneMode.ONLINE_DELAYED) {
                     evaporate(evaporationFactor)
                     for (j in 0 until cities.size) {
                         currentPath[j].addPheromone(currentPath[j + 1], pheromone)
                     }
                 }
             }
-            if (!isPheromoneOnline) {
+            if (pheromoneMode == PheromoneMode.OFFLINE) {
                 evaporate(evaporationFactor)
                 for (j in 0 until cities.size) {
                     bestCurrentPath[j].addPheromone(bestCurrentPath[j + 1], pheromone)

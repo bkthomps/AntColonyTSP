@@ -1,4 +1,7 @@
 .idea/*
-AntColonyTSP.iml
+*.iml
+.gradle/*
+gradle/*
+app/build/*
 lib/*
 out/*
